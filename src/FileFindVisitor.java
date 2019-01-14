@@ -1,16 +1,17 @@
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.List;
 
 class FileFindVisitor extends SimpleFileVisitor<Path> {
     private PathMatcher matcher;
-    private ArrayList<String> foundXmlFiles = new ArrayList();
+    private List<String> foundXmlFiles = new ArrayList<>();
 
     public FileFindVisitor(String pattern) {
         matcher = FileSystems.getDefault().getPathMatcher(pattern);
     }
 
-    public ArrayList<String> getFoundXmlFiles() {
+    public List<String> getFoundXmlFiles() {
         return foundXmlFiles;
     }
 
@@ -22,6 +23,7 @@ class FileFindVisitor extends SimpleFileVisitor<Path> {
         return foundXmlFiles.size();
     }
 
+    @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes fileAttributes) {
         find(path);
         return FileVisitResult.CONTINUE;

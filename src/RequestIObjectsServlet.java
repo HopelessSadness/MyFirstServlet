@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@WebServlet ("/api/spxtags")
+@WebServlet("/api/spxtags")
 public class RequestIObjectsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -20,30 +20,33 @@ public class RequestIObjectsServlet extends HttpServlet {
         PrintWriter printWriter = resp.getWriter();
 
         String pathSheme = System.getenv().get("SPF_SCHEMA");
-        Path startPath = Paths.get(pathSheme);
-        FileFindVisitor visitor = new FileFindVisitor("glob:*.xml");
 
-        try {
-            Files.walkFileTree(startPath, visitor);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (pathSheme == null) {
+            printWriter.write("{\"Error\" : \"Не задана переменная окружения SPF_SCHEMA\"}");
+        } else {
+            Path startPath = Paths.get(pathSheme);
+            FileFindVisitor visitor = new FileFindVisitor("glob:*.xml");
+
+            try {
+                Files.walkFileTree(startPath, visitor);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            IObjectsParser parser = new IObjectsParser();
+            parser.setLinksToXmlFiles(visitor.getFoundXmlFiles());
+            try {
+                parser.startParsing();
+            } catch (SAXException | ParserConfigurationException e) {
+                e.printStackTrace();
+            }
+
+            JsonConverter iObjJson = new JsonConverter();
+            iObjJson.setiObjectsForJson(parser.getIObjects());
+            iObjJson.convertIObjectsToJson();
+
+            printWriter.write(iObjJson.getJsonResponseString());
         }
-
-        IObjectsParser parser = new IObjectsParser();
-        parser.setLinksToXmlFiles(visitor.getFoundXmlFiles());
-        try {
-            parser.startPsrsing();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        JsonConverter iObjJson = new JsonConverter();
-        iObjJson.setiObjectsForJson(parser.getIObjects());
-        iObjJson.convertIObjectsToJson();
-
-        printWriter.write(iObjJson.getJsonResponseString());
     }
 }
 

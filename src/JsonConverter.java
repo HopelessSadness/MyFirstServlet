@@ -1,16 +1,12 @@
 import javax.json.*;
-import javax.json.stream.JsonGenerator;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 class JsonConverter {
-    private ArrayList<IObject> iObjectsForJson = new ArrayList<>();
+    private List<IObject> iObjectsForJson = new ArrayList<>();
     private String jsonResponseString;
 
-    public void setiObjectsForJson (ArrayList<IObject> iObjectsForJson){
+    public void setiObjectsForJson (List<IObject> iObjectsForJson){
         this.iObjectsForJson = iObjectsForJson;
     }
 
@@ -28,16 +24,6 @@ class JsonConverter {
             array.add(listJson);
         }
         JsonObject jsonResponse = root.add("response", array).build();
-
-        StringWriter sw = new StringWriter();
-        JsonReader jr = Json.createReader(new StringReader(jsonResponse.toString()));
-        JsonObject jobj = jr.readObject();
-        Map<String, Object> properties = new HashMap<>(1);
-        properties.put(JsonGenerator.PRETTY_PRINTING, true);
-        JsonWriterFactory writerFactory = Json.createWriterFactory(properties);
-        JsonWriter jsonWriter = writerFactory.createWriter(sw);
-        jsonWriter.writeObject(jobj);
-        jsonWriter.close();
-        jsonResponseString = sw.toString();
+        jsonResponseString = jsonResponse.toString();
     }
 }

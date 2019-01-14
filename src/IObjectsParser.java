@@ -10,12 +10,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 class IObjectsParser {
-    private ArrayList<IObject> iObjects = new ArrayList<>();
-    private ArrayList<String> linksToXmlFiles = new ArrayList<>();
+    private List<IObject> iObjects = new ArrayList<>();
+    private List<String> linksToXmlFiles = new ArrayList<>();
 
-    public ArrayList<IObject> getIObjects() {
+    public List<IObject> getIObjects() {
         return iObjects;
     }
 
@@ -27,11 +28,11 @@ class IObjectsParser {
         return iObjects.get(i);
     }
 
-    public void setLinksToXmlFiles(ArrayList<String> linksToXmlFiles) {
+    public void setLinksToXmlFiles(List<String> linksToXmlFiles) {
         this.linksToXmlFiles = linksToXmlFiles;
     }
 
-    public void startPsrsing() throws IOException, SAXException, ParserConfigurationException {
+    public void startParsing() throws IOException, SAXException, ParserConfigurationException {
         for (int i = 0; i < linksToXmlFiles.size(); i++) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -39,9 +40,9 @@ class IObjectsParser {
             NodeList iObjectElements = document.getDocumentElement().getElementsByTagName("IObject");
 
             for (int j = 0; j < iObjectElements.getLength(); j++) {
-                Node iobject = iObjectElements.item(j);
-                if (iobject.getParentNode().getNodeName().equals("EnumEnum")) {
-                    NamedNodeMap attributes = iobject.getAttributes();
+                Node iObject = iObjectElements.item(j);
+                if (iObject.getParentNode().getNodeName().equals("EnumEnum")) {
+                    NamedNodeMap attributes = iObject.getAttributes();
                     iObjects.add(new IObject(attributes.getNamedItem("UID").getNodeValue(), attributes.getNamedItem("Name").getNodeValue()));
                 }
             }
