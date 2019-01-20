@@ -34,18 +34,13 @@ public class RequestIObjectsServlet extends HttpServlet {
             }
 
             IObjectsParser parser = new IObjectsParser();
-            parser.setLinksToXmlFiles(visitor.getFoundXmlFiles());
+            JsonConverter iObjJson = new JsonConverter();
+
             try {
-                parser.startParsing();
+                printWriter.write(iObjJson.convertIObjectsToJson(parser.startParsing(visitor.getFoundXmlFiles())));
             } catch (SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
             }
-
-            JsonConverter iObjJson = new JsonConverter();
-            iObjJson.setiObjectsForJson(parser.getIObjects());
-            iObjJson.convertIObjectsToJson();
-
-            printWriter.write(iObjJson.getJsonResponseString());
         }
     }
 }

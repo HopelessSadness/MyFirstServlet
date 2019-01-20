@@ -6,7 +6,7 @@ class JsonConverter {
     private List<IObject> iObjectsForJson = new ArrayList<>();
     private String jsonResponseString;
 
-    public void setiObjectsForJson (List<IObject> iObjectsForJson){
+    public void setIObjectsForJson (List<IObject> iObjectsForJson){
         this.iObjectsForJson = iObjectsForJson;
     }
 
@@ -14,7 +14,10 @@ class JsonConverter {
         return this.jsonResponseString;
     }
 
-    public void convertIObjectsToJson (){
+    public String convertIObjectsToJson(List<IObject> iObjects) {
+
+        setIObjectsForJson(iObjects);
+
         JsonObjectBuilder root = Json.createObjectBuilder();
         JsonArrayBuilder array = Json.createArrayBuilder();
 
@@ -25,5 +28,7 @@ class JsonConverter {
         }
         JsonObject jsonResponse = root.add("response", array).build();
         jsonResponseString = jsonResponse.toString();
+
+        return jsonResponseString;
     }
 }

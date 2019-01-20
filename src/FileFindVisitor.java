@@ -25,14 +25,10 @@ class FileFindVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes fileAttributes) {
-        find(path);
-        return FileVisitResult.CONTINUE;
-    }
-
-    private void find(Path path) {
         Path name = path.getFileName();
         if (matcher.matches(name)) {
             foundXmlFiles.add(path.toAbsolutePath().toString());
         }
+        return FileVisitResult.CONTINUE;
     }
 }
