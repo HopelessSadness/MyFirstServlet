@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -26,18 +25,11 @@ public class RequestIObjectsServlet extends HttpServlet {
         } else {
             Path startPath = Paths.get(pathSheme);
             FileFindVisitor visitor = new FileFindVisitor("glob:*.xml");
-
-            try {
-                Files.walkFileTree(startPath, visitor);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
             IObjectsParser parser = new IObjectsParser();
             JsonConverter iObjJson = new JsonConverter();
 
             try {
-                printWriter.write(iObjJson.convertIObjectsToJson(parser.startParsing(visitor.getFoundXmlFiles())));
+                printWriter.write(iObjJson.convertIObjectsToJson(parser.startParsing(visitor.findXmls(startPath,visitor))));
             } catch (SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
             }

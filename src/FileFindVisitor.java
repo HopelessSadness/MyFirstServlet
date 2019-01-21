@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -30,5 +31,14 @@ class FileFindVisitor extends SimpleFileVisitor<Path> {
             foundXmlFiles.add(path.toAbsolutePath().toString());
         }
         return FileVisitResult.CONTINUE;
+    }
+
+    public List findXmls (Path path, FileFindVisitor ffVisitor){
+        try {
+            Files.walkFileTree(path, ffVisitor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return foundXmlFiles;
     }
 }
